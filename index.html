@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>REFLECT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="manifest.json" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #000;
+      color: #fff;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    textarea {
+      width: 100%;
+      height: 140px;
+      background: #111;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      resize: none;
+    }
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 15px;
+      font-size: 16px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .response {
+      margin-top: 20px;
+      white-space: pre-line;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>REFLECT</h1>
+  <p>The truth you avoid.</p>
+
+  <textarea id="input" placeholder="Write one situation, thought, or doubt..."></textarea>
+  <button onclick="reflect()">REFLECT</button>
+
+  <div class="response" id="output"></div>
+
+<script>
+async function reflect() {
+  const input = document.getElementById("input").value;
+  const output = document.getElementById("output");
+
+  if (!input) return;
+
+  output.innerText = "Reflecting...";
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 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"
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      temperature: 0.3,
+      messages: [
+        {
+          role: "system",
+          content: `You are REFLECT.
+
+Your role is not to comfort, motivate, or advise.
+You are a cognitive mirror.
+
+Structure your response exactly:
+
+1. WHAT YOU SAY
+2. WHAT IT REVEALS
+3. THE MOST LIKELY TRUTH
+
+Be calm, direct, honest.
+No advice. No reassurance.`
+        },
+        {
+          role: "user",
+          content: input
+        }
+      ]
+    })
+  });
+
+  const data = await response.json();
+  output.innerText = data.choices[0].message.content;
+}
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+</body>
+</html>
 
